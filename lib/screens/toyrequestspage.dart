@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:playpool_flutter/models/toyDTO.dart';
+import 'package:playpool_flutter/viewmodels/appState.dart';
+import 'package:provider/provider.dart';
 
 class ToyRequestsPage extends StatefulWidget{
 var requestedToys = <ToyDTO>[];
@@ -7,6 +9,7 @@ var requestedToys = <ToyDTO>[];
   State<ToyRequestsPage> createState() => _ToyRequestsPageState();
 
   Widget build (BuildContext context){
+
     return ListView(
       padding: const EdgeInsets.all(10),
       children: [
@@ -21,12 +24,17 @@ var requestedToys = <ToyDTO>[];
 }
 
 class _ToyRequestsPageState extends State<ToyRequestsPage> {
-  var toyRequests = false; //should be context.toyRequests
   
   @override
   Widget build(BuildContext context){
+    var requestedToys = context.watch<AppState>().requestedToys;
+
     return Container(
       color: const Color.fromARGB(255, 219, 219, 219), 
-      child: ListView());
+      child: ListView(
+        children: [ ...requestedToys.map((toy) => Card( child: 
+          ListTile(title: Text(toy.name))
+        ))],
+      ));
   }
 }
