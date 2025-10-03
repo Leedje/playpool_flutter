@@ -13,7 +13,9 @@ class AppState extends ChangeNotifier {
       return ToyDTO()
         ..id = 'toy_$index'
         ..name = 'Toy #$index'
-        ..image = toyImages[index];
+        ..image = toyImages[index]
+        ..ageGroup = '4+'
+        ..condition = 'Good';
     });
   }
 
@@ -32,12 +34,22 @@ class AppState extends ChangeNotifier {
   ];
 
   void addToWishlist(ToyDTO toy) {
-    _wishlist.add(toy);
+    if (!_wishlist.contains(toy)) {
+      _wishlist.add(toy);
+    }
     notifyListeners();
   }
 
   void requestToy(ToyDTO toy) {
-    _requestedToys.add(toy);
+    if (!_requestedToys.contains(toy)) {
+      _requestedToys.add(toy);
+    }
     notifyListeners();
   }
+
+  void declineRequest(String selectedToyId){
+    _wishlist.removeWhere((toy) => toy.id == selectedToyId);
+    notifyListeners();
+  }
+
 }

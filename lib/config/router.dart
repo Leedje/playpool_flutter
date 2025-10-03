@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:playpool_flutter/layouts/app_scaffold.dart';
+import 'package:playpool_flutter/screens/checkoutpage.dart';
+import 'package:playpool_flutter/screens/confirmationpage.dart';
 import 'package:playpool_flutter/screens/homepage.dart';
 import 'package:playpool_flutter/screens/toyrequestspage.dart';
 import 'package:playpool_flutter/screens/parent-code-screen.dart';
@@ -21,21 +23,20 @@ final appRouter = GoRouter(
         //   return WishlistPage(id: id);
         // }),
         GoRoute(
-          name: 'wishlist',
           path: '/wishlist',
           builder: (context, state) => WishlistPage(),
         ),
         GoRoute(
-          name: 'parent-verification', 
           path: '/verification', 
           builder: (context, state) => ParentVerificationScreen(),
         ),
         GoRoute(
-          name: 'myrequests',
           path:
               '/requests', 
           builder: (context, state) => ToyRequestsPage(),
         ),
+        GoRoute(path: '/toycheckout', builder: (context, state) => CheckoutPage(),),
+        GoRoute(path: '/confirmationscreen', builder: (context, state) => ConfirmationPage(),)
       ],
     ),
   ],

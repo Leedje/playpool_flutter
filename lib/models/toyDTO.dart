@@ -4,4 +4,6 @@ class ToyDTO {
   String image = "";
   bool isFavorited = false;
   bool isWishlisted = false;
+  String condition = '';
+  String ageGroup = '';
 }

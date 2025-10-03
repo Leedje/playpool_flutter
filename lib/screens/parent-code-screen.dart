@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pinput/pinput.dart';
 
-class ParentVerificationScreen extends StatelessWidget{
-
-@override
-  Widget build (BuildContext context){
-// i wanna change the background color
+class ParentVerificationScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
 
     final defaultPinTheme = PinTheme(
       width: 56,
@@ -23,11 +21,8 @@ class ParentVerificationScreen extends StatelessWidget{
       ),
     );
 
-
     final submittedPinTheme = defaultPinTheme.copyWith(
-      decoration: defaultPinTheme.decoration?.copyWith(
-        color: Colors.amber
-      ),
+      decoration: defaultPinTheme.decoration?.copyWith(color: Colors.amber),
     );
 
     return Container(
@@ -40,15 +35,15 @@ class ParentVerificationScreen extends StatelessWidget{
             submittedPinTheme: submittedPinTheme,
             onCompleted: (pin) => print(pin),
             validator: (code) {
-              if(code == '1234'){
+              if (code == '1234') {
                 context.go('/requests');
+              } else {
+                for (int i = 3; i > 0; i--) {
+                  //context.go('/');
+                  return code == '1234' ? "null" : 'Pin is incorrect. \n ${i} attepts left.';
+                }
               }
-              else {
-              context.go('/');
-              }
-      
-              return code == '1234' ? "null" : 'Pin is incorrect.' ;
-      
+
               //on success, context.go('/requests')
               // if it doesn't succeed 3 times (display attempts left), then it goes to the wishlist page
               //a popup says parent has been notified of this attempt.

@@ -13,7 +13,7 @@ class WishlistPage extends StatelessWidget{
       crossAxisCount: 4,
       children: [
         ...toys.map((toy) => Card(
-          child: Text(toy.name),
+          child: Text(toy.name), 
         ))
       ],
     );
