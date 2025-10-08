@@ -21,6 +21,7 @@ class _HomePageState extends State<HomePage> {
     var toyList = appContext.initializeToys();
 
     return GridView.count(
+      padding: EdgeInsets.all(15),
       crossAxisCount: 2,
       children: toyList.map((toy) {
         bool isSelected = selectedToyId == toy.id;

@@ -15,53 +15,114 @@ class CheckoutPage extends StatefulWidget {
 }
 
 class _CheckoutPageState extends State<CheckoutPage> {
-  ReservationModel reservation = ReservationModel(); 
-  final _formKey = GlobalKey<_CheckoutPageState>();
+  ReservationModel reservation = ReservationModel();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     final toy = context.watch<AppState>().getToyById(widget.toyId);
     final appContext = context.watch<AppState>();
-    
-    return Container(
-      alignment: AlignmentGeometry.center,
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ToyCard(toy: toy),
-            TextFormField(initialValue: reservation.name, decoration: InputDecoration(hintText: 'Name')),
-            TextFormField(
-              decoration: InputDecoration(hintText: 'Reservation Dates'),
-              // should be a selector and the values should be set to the reservation model
-            ), 
-              
-            TextFormField(initialValue: reservation.address, decoration: InputDecoration(hintText: 'Address')),
-              
-            DropdownButtonFormField(
-              items: List.generate(5, (int index) {
-                return DropdownMenuItem(child: Text('Location $index'));
-              }),
-              onChanged: (location) {
-                reservation.dropoff_pickuplocation = location;
-              },
-              validator: (location) {
-                if (location == null){
-                  return 'Please select a dropoff and pickup location.';
-                }
-              },
+
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 236, 234, 234),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+        child: SafeArea(
+          child: Container(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                spacing: 3,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  ToyCard(toy: toy),
+                  Card(
+                    color: Colors.white,
+                    child: TextFormField(
+                      initialValue: reservation.name,
+                      decoration: InputDecoration(
+                        hintText: 'Name',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(16),
+                      ),
+                    ),
+                  ),
+                  Card(
+                    color: Colors.white,
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        hintText: 'Reservation Dates',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(16),
+                      ),
+                      // should be a selector and the values should be set to the reservation model
+                    ),
+                  ),
+
+                  Card(
+                    color: Colors.white,
+                    child: TextFormField(
+                      initialValue: reservation.address,
+                      decoration: InputDecoration(
+                        hintText: 'Address',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(16),
+                      ),
+                    ),
+                  ),
+
+                  Card(
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      child: DropdownButtonFormField(
+                        decoration: InputDecoration(border: InputBorder.none),
+                        hint: Text('Select Dropoff/Pickup Location'),
+                        isExpanded: true,
+                        initialValue: reservation.dropoff_pickuplocation,
+                        items: List.generate(5, (int index) {
+                          return DropdownMenuItem(
+                            alignment: AlignmentGeometry.centerLeft,
+                            value: 'Location $index',
+                            child: Text(
+                              'Location $index',
+                              textAlign: TextAlign.start,
+                            ),
+                          );
+                        }),
+                        onChanged: (location) {
+                          setState(() {
+                            reservation.dropoff_pickuplocation = location
+                                .toString();
+                          });
+                        },
+                        validator: (location) {
+                          if (location == null) {
+                            return 'Please select a dropoff and pickup location.';
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  FilledButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        appContext.submitReservation(reservation);
+                        context.go('/confirmationscreen');
+                      } else {
+                        //show snack bar or error modal if needed
+                      }
+                    },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Color(0xFFFFC943),
+                    ),
+                    child: Text('Confirm Reservation'),
+                  ),
+                ],
+              ),
             ),
-            FilledButton(onPressed: () {
-               // if the form is still validating, show a snackbar , else show the screen
-               appContext.submitReservation(reservation);
-               context.go('/confirmationscreen');
-            }, 
-            style: FilledButton.styleFrom(
-              backgroundColor: Color(0xFFFFC943)
-            ),
-            child: Text('Confirm Reservation'))
-          ],
+          ),
         ),
       ),
     );

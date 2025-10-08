@@ -4,7 +4,7 @@ class ReservationModel {
   ToyDTO toy = ToyDTO();
   String name = '';
   String address = '';
-  String dropoff_pickuplocation = '';
+  String? dropoff_pickuplocation;
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
 }

@@ -18,7 +18,7 @@ class _ToyRequestsPageState extends State<ToyRequestsPage> {
     var requestedToys = context.watch<AppState>().requestedToys;
 
     return Container(
-      color: const Color.fromARGB(255, 219, 219, 219),
+      color: const Color.fromARGB(255, 236, 234, 234),
       child: ListView(
         children: requestedToys.map((toy) {
           return Column(
