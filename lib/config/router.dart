@@ -18,10 +18,6 @@ final appRouter = GoRouter(
           path: '/',
           builder: (context, state) => HomePage(),
         ),
-        // GoRoute(name: 'wishlist', path: '/wishlist/:id', builder: (context, state) {
-        //   final id = state.pathParameters["id"]!
-        //   return WishlistPage(id: id);
-        // }),
         GoRoute(
           path: '/wishlist',
           builder: (context, state) => WishlistPage(),
@@ -35,7 +31,10 @@ final appRouter = GoRouter(
               '/requests', 
           builder: (context, state) => ToyRequestsPage(),
         ),
-        GoRoute(path: '/toycheckout', builder: (context, state) => CheckoutPage(),),
+        GoRoute(path: '/toycheckout/:toyid', builder: (context, state) {
+          final id = state.pathParameters['toyid']!;
+          return CheckoutPage(toyId: id);
+        }),
         GoRoute(path: '/confirmationscreen', builder: (context, state) => ConfirmationPage(),)
       ],
     ),

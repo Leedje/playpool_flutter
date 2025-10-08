@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:playpool_flutter/models/reservationmodel.dart';
 import 'package:playpool_flutter/models/toyDTO.dart';
 
 class AppState extends ChangeNotifier {
@@ -7,6 +8,9 @@ class AppState extends ChangeNotifier {
 
   final List<ToyDTO> _wishlist = [];
   List<ToyDTO> get wishlist => _wishlist;
+
+  final List<ReservationModel> _pendingReservations = [];
+  List<ReservationModel> get pendingReservations => _pendingReservations;
 
   List<ToyDTO> initializeToys() {
     return List.generate(10, (index) {
@@ -49,6 +53,15 @@ class AppState extends ChangeNotifier {
 
   void declineRequest(String selectedToyId){
     _wishlist.removeWhere((toy) => toy.id == selectedToyId);
+    notifyListeners();
+  }
+
+  ToyDTO getToyById(String toyId){
+    return _requestedToys.firstWhere((toy) => toyId == toy.id);
+  }
+
+  void submitReservation(ReservationModel reservation){
+    _pendingReservations.add(reservation);
     notifyListeners();
   }
 
