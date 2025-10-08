@@ -47,8 +47,7 @@ class _ToyRequestsPageState extends State<ToyRequestsPage> {
                   ),
                   FilledButton(
                     onPressed: () {
-                      // Accept request: Forward to confirmation page and push the toy object into the view
-                      context.go('/toycheckout/${toy.id}');
+                      context.push('/toycheckout/${toy.id}');
                     },
                     style: FilledButton.styleFrom(
                       backgroundColor: const Color(0xFFFFC943),

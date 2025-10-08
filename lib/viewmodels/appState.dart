@@ -51,18 +51,19 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void declineRequest(String selectedToyId){
+  void declineRequest(String selectedToyId) {
     _wishlist.removeWhere((toy) => toy.id == selectedToyId);
     notifyListeners();
   }
 
-  ToyDTO getToyById(String toyId){
+  ToyDTO getToyById(String toyId) {
     return _requestedToys.firstWhere((toy) => toyId == toy.id);
   }
 
-  void submitReservation(ReservationModel reservation){
+  void submitReservation(ReservationModel reservation) {
+    _requestedToys.removeWhere((toy) => toy.id == reservation.toy.id);
+
     _pendingReservations.add(reservation);
     notifyListeners();
   }
-
 }

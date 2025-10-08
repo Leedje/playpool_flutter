@@ -25,104 +25,123 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 236, 234, 234),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-        child: SafeArea(
-          child: Container(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                spacing: 3,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  ToyCard(toy: toy),
-                  Card(
-                    color: Colors.white,
-                    child: TextFormField(
-                      initialValue: reservation.name,
-                      decoration: InputDecoration(
-                        hintText: 'Name',
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.all(16),
-                      ),
-                    ),
-                  ),
-                  Card(
-                    color: Colors.white,
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        hintText: 'Reservation Dates',
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.all(16),
-                      ),
-                      // should be a selector and the values should be set to the reservation model
-                    ),
-                  ),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 24.0,
+              ),
 
-                  Card(
-                    color: Colors.white,
-                    child: TextFormField(
-                      initialValue: reservation.address,
-                      decoration: InputDecoration(
-                        hintText: 'Address',
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.all(16),
+              //Start Form
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 35),
+                    ToyCard(toy: toy),
+                    Card(
+                      color: Colors.white,
+                      child: TextFormField(
+                        initialValue: reservation.name,
+                        decoration: InputDecoration(
+                          hintText: 'Name',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(16),
+                        ),
                       ),
                     ),
-                  ),
-
-                  Card(
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
-                      child: DropdownButtonFormField(
-                        decoration: InputDecoration(border: InputBorder.none),
-                        hint: Text('Select Dropoff/Pickup Location'),
-                        isExpanded: true,
-                        initialValue: reservation.dropoff_pickuplocation,
-                        items: List.generate(5, (int index) {
-                          return DropdownMenuItem(
-                            alignment: AlignmentGeometry.centerLeft,
-                            value: 'Location $index',
-                            child: Text(
-                              'Location $index',
-                              textAlign: TextAlign.start,
-                            ),
-                          );
-                        }),
-                        onChanged: (location) {
-                          setState(() {
-                            reservation.dropoff_pickuplocation = location
-                                .toString();
-                          });
-                        },
-                        validator: (location) {
-                          if (location == null) {
-                            return 'Please select a dropoff and pickup location.';
-                          }
-                        },
+                    Card(
+                      color: Colors.white,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          hintText: 'Reservation Dates',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(16),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 10),
-                  FilledButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        appContext.submitReservation(reservation);
-                        context.go('/confirmationscreen');
-                      } else {
-                        //show snack bar or error modal if needed
-                      }
-                    },
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Color(0xFFFFC943),
+                    Card(
+                      color: Colors.white,
+                      child: TextFormField(
+                        initialValue: reservation.address,
+                        decoration: InputDecoration(
+                          hintText: 'Address',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(16),
+                        ),
+                      ),
                     ),
-                    child: Text('Confirm Reservation'),
-                  ),
-                ],
+                    Card(
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                        child: DropdownButtonFormField<String>(
+                          decoration: InputDecoration(border: InputBorder.none),
+                          hint: Text('Select Dropoff/Pickup Location'),
+                          isExpanded: true,
+                          initialValue: reservation.dropoff_pickuplocation,
+                          items: List.generate(5, (int index) {
+                            final location = 'Location $index';
+                            return DropdownMenuItem(
+                              value: location,
+                              child: Text(location),
+                            );
+                          }),
+                          onChanged: (location) {
+                            setState(() {
+                              reservation.dropoff_pickuplocation = location;
+                            });
+                          },
+                          validator: (location) {
+                            if (location == null) {
+                              return 'Please select a dropoff and pickup location.';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    FilledButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          appContext.submitReservation(reservation);
+                          context.replace('/confirmationscreen');
+                        }
+                      },
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Color(0xFFFFC943),
+                      ),
+                      child: Text('Confirm Reservation'),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
+            //End Form
+
+            /// Top-left back button
+            Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16.0, top: 16.0),
+                child: FilledButton.icon(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.amber,
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  onPressed: () {
+                    context.pop();
+                  },
+                  icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+                  label: Text('Back', style: TextStyle(color: Colors.black)),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
