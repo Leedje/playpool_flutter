@@ -45,7 +45,7 @@ class AppState extends ChangeNotifier {
   }
 
   void requestToy(ToyDTO requestedToy) {
-    if (!_requestedToys.any((toy) => toy.id == requestedToy.id)) {
+    if (!_requestedToys.any((toy) => toy.id == requestedToy.id) && !_confirmedReservations.any((res) => res.toy.id == requestedToy.id)) {
       _requestedToys.add(requestedToy);
       notifyListeners();
     }

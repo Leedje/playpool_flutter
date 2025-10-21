@@ -45,7 +45,15 @@ class _ToyRequestsPageState extends State<ToyRequestsPage> {
                 ),
                 SizedBox(height: 20,)
 
-            ],),
+            ],)
+            
+            else 
+               Padding(
+                 padding: const EdgeInsets.all(8.0),
+                 child: Text('No reservations made yet.', textAlign: TextAlign.center,),
+               )
+               ,
+            
           
           //Requested Toys
           if (requestedToys.isNotEmpty)
@@ -96,6 +104,11 @@ class _ToyRequestsPageState extends State<ToyRequestsPage> {
                 ],
               ),],),),
             ],
+          )
+          else 
+          Padding(padding: 
+          EdgeInsets.all(35),
+          child: Text('No toys requested yet.', textAlign: TextAlign.center,),
           ),
         ],
 

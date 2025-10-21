@@ -17,11 +17,13 @@ class CheckoutPage extends StatefulWidget {
 class _CheckoutPageState extends State<CheckoutPage> {
   ReservationModel reservation = ReservationModel();
   final _formKey = GlobalKey<FormState>();
-
+  DateTimeRange? selectedDates;
+  
   @override
   Widget build(BuildContext context) {
     final toy = context.watch<AppState>().getToyById(widget.toyId);
     final appContext = context.watch<AppState>();
+    
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 236, 234, 234),
@@ -46,6 +48,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       color: Colors.white,
                       child: TextFormField(
                         initialValue: reservation.name,
+                        onChanged: (value) => reservation.name = value,
                         decoration: InputDecoration(
                           hintText: 'Name',
                           border: InputBorder.none,
@@ -55,18 +58,33 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     ),
                     Card(
                       color: Colors.white,
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          hintText: 'Reservation Dates',
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.all(16),
+                      child: ListTile(
+                        title: Text(
+                          selectedDates == null
+                              ? 'Select Reservation Dates'
+                              : '${selectedDates!.start.toLocal().toString().split(' ')[0]} → ${selectedDates!.end.toLocal().toString().split(' ')[0]}',
                         ),
+                        trailing: Icon(Icons.calendar_today),
+                        onTap: () async {
+                          final picked = await showDateRangePicker(
+                            context: context,
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(Duration(days: 365)),
+                          );
+                          if (picked != null) {
+                            setState(() {
+                              selectedDates = picked;
+                              reservation.reservationDates = picked;
+                            });
+                          }
+                        },
                       ),
                     ),
                     Card(
                       color: Colors.white,
                       child: TextFormField(
                         initialValue: reservation.address,
+                        onChanged: (value) => reservation.address = value,
                         decoration: InputDecoration(
                           hintText: 'Address',
                           border: InputBorder.none,
@@ -83,6 +101,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           hint: Text('Select Dropoff/Pickup Location'),
                           isExpanded: true,
                           initialValue: reservation.dropoff_pickuplocation,
+                          onSaved: (newValue) => reservation.dropoff_pickuplocation = newValue,
                           items: List.generate(5, (int index) {
                             final location = 'Location $index';
                             return DropdownMenuItem(
@@ -107,12 +126,25 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     SizedBox(height: 10),
                     FilledButton(
                       onPressed: () {
-                        if (_formKey.currentState!.validate() && appContext.submitReservation(reservation)) {
-                          context.replace('/confirmationscreen');
+                        final isFormValid = _formKey.currentState!.validate();
+                        final hasDates = selectedDates != null;
+
+                        if (!hasDates) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Please select reservation dates'),
+                            ),
+                          );
                         }
-                        else {
-                          // stay on the screen and display missing fields
+
+                        if (isFormValid && hasDates) {
+                          _formKey.currentState!.save();
+                          reservation.toy = toy; // make sure toy is assigned
+                          if (appContext.submitReservation(reservation)) {
+                            context.replace('/confirmationscreen');
+                          }
                         }
+
                       },
                       style: FilledButton.styleFrom(
                         backgroundColor: Color(0xFFFFC943),

@@ -2,10 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pinput/pinput.dart';
 
-class ParentVerificationScreen extends StatelessWidget {
+class ParentVerificationScreen extends StatefulWidget {
+  @override
+  State<ParentVerificationScreen> createState() =>
+      _ParentVerificationScreenState();
+}
+
+class _ParentVerificationScreenState extends State<ParentVerificationScreen> {
+  int attemptsLeft = 4;
+  String? errorMessage;
+
+  void handlePin(String pin) {
+    if (pin == '1234') {
+      context.go('/requests'); 
+    } else {
+      setState(() {
+        attemptsLeft--;
+        errorMessage = 'Incorrect PIN. $attemptsLeft attempts left.';
+      });
+
+      if (attemptsLeft <= 0) {
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text("Access Denied"),
+            content: Text("Parent has been notified of this attempt."),
+            actions: [
+              TextButton(
+                onPressed: () => context.go('/'),
+                child: Text("Back to Home"),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-
     final defaultPinTheme = PinTheme(
       width: 56,
       height: 56,
@@ -25,31 +60,29 @@ class ParentVerificationScreen extends StatelessWidget {
       decoration: defaultPinTheme.decoration?.copyWith(color: Colors.amber),
     );
 
-    return Container(
-      color: Color(0xFFFFECBD),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Pinput(
-            defaultPinTheme: defaultPinTheme,
-            submittedPinTheme: submittedPinTheme,
-            onCompleted: (pin) => print(pin),
-            validator: (code) {
-              if (code == '1234') {
-                context.go('/requests');
-              } else {
-                for (int i = 3; i > 0; i--) {
-                  //context.go('/');
-                  return code == '1234' ? "null" : 'Pin is incorrect. \n ${i} attepts left.';
-                }
-              }
-
-              //on success, context.go('/requests')
-              // if it doesn't succeed 3 times (display attempts left), then it goes to the wishlist page
-              //a popup says parent has been notified of this attempt.
-            },
-          ),
-        ],
+    return Scaffold(
+      backgroundColor: Color(0xFFFFECBD),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Pinput(
+              length: 4,
+              defaultPinTheme: defaultPinTheme,
+              submittedPinTheme: submittedPinTheme,
+              onCompleted: handlePin,
+            ),
+            if (errorMessage != null)
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text(
+                  errorMessage!,
+                  style: TextStyle(color: Colors.red, fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
