@@ -107,9 +107,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     SizedBox(height: 10),
                     FilledButton(
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          appContext.submitReservation(reservation);
+                        if (_formKey.currentState!.validate() && appContext.submitReservation(reservation)) {
                           context.replace('/confirmationscreen');
+                        }
+                        else {
+                          // stay on the screen and display missing fields
                         }
                       },
                       style: FilledButton.styleFrom(

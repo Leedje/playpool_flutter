@@ -16,11 +16,13 @@ class _ToyRequestsPageState extends State<ToyRequestsPage> {
   Widget build(BuildContext context) {
     var appContext = context.watch<AppState>();
     var requestedToys = context.watch<AppState>().requestedToys;
+    var confirmedReservations = context.watch<AppState>().confirmedReservations; 
 
     return Container(
       color: const Color.fromARGB(255, 236, 234, 234),
       child: ListView(
-        children: requestedToys.map((toy) {
+        children:
+         requestedToys.map((toy) {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [

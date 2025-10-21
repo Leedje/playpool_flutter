@@ -9,8 +9,8 @@ class AppState extends ChangeNotifier {
   final List<ToyDTO> _wishlist = [];
   List<ToyDTO> get wishlist => _wishlist;
 
-  final List<ReservationModel> _pendingReservations = [];
-  List<ReservationModel> get pendingReservations => _pendingReservations;
+  final List<ReservationModel> _confirmedReservations = [];
+  List<ReservationModel> get confirmedReservations => _confirmedReservations;
 
   List<ToyDTO> initializeToys() {
     return List.generate(10, (index) {
@@ -37,22 +37,23 @@ class AppState extends ChangeNotifier {
         'https://m.media-amazon.com/images/I/815k5V8u7gL.jpg',
   ];
 
-  void addToWishlist(ToyDTO toy) {
-    if (!_wishlist.contains(toy)) {
-      _wishlist.add(toy);
-    }
+  void addToWishlist(ToyDTO newToy) {
+    if (!_wishlist.any((toy) => toy.id == newToy.id)) {
+      _wishlist.add(newToy);
     notifyListeners();
+    }
   }
 
-  void requestToy(ToyDTO toy) {
-    if (!_requestedToys.contains(toy)) {
-      _requestedToys.add(toy);
+  void requestToy(ToyDTO requestedToy) {
+    if (!_requestedToys.any((toy) => toy.id == requestedToy.id)) {
+      _requestedToys.add(requestedToy);
+      notifyListeners();
     }
-    notifyListeners();
+    
   }
 
   void declineRequest(String selectedToyId) {
-    _wishlist.removeWhere((toy) => toy.id == selectedToyId);
+    _requestedToys.removeWhere((toy) => toy.id == selectedToyId);
     notifyListeners();
   }
 
@@ -60,10 +61,20 @@ class AppState extends ChangeNotifier {
     return _requestedToys.firstWhere((toy) => toyId == toy.id);
   }
 
-  void submitReservation(ReservationModel reservation) {
-    _requestedToys.removeWhere((toy) => toy.id == reservation.toy.id);
+  bool submitReservation(ReservationModel reservation) {
+    final initialLength = _requestedToys.length;
 
-    _pendingReservations.add(reservation);
-    notifyListeners();
+    _requestedToys.removeWhere((toy) => toy.id == reservation.toy?.id);
+
+    final wasRemoved = _requestedToys.length < initialLength;
+
+    if (wasRemoved) {
+      _confirmedReservations.add(reservation);
+      notifyListeners();
+      return true;
+    }
+
+    return false;
   }
+
 }

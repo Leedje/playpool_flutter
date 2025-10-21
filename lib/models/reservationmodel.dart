@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:playpool_flutter/models/toyDTO.dart';
 
 class ReservationModel {
@@ -5,6 +6,5 @@ class ReservationModel {
   String name = '';
   String address = '';
   String? dropoff_pickuplocation;
-  DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now();
+  DateTimeRange reservationDates = DateTimeRange(start: DateTime.now(), end: DateTime.now());
 }
