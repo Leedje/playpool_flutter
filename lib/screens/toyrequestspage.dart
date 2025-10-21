@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:playpool_flutter/viewmodels/appState.dart';
+import 'package:playpool_flutter/widgets/confirmedToyCard.dart';
 import 'package:playpool_flutter/widgets/toyCard.dart';
 import 'package:provider/provider.dart';
 
@@ -18,16 +19,49 @@ class _ToyRequestsPageState extends State<ToyRequestsPage> {
     var requestedToys = context.watch<AppState>().requestedToys;
     var confirmedReservations = context.watch<AppState>().confirmedReservations; 
 
-    return Container(
-      color: const Color.fromARGB(255, 236, 234, 234),
-      child: ListView(
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 236, 234, 234),
+      body: ListView(
+        padding: EdgeInsets.all(8),
         children:
-         requestedToys.map((toy) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
+        [
+          //Confirmed Toys
+          if(confirmedReservations.isNotEmpty)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Confirmed Reservations', style: TextStyle( fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10,),
+                Column(
+                  children: [
+                    ...confirmedReservations.map((res) => Column(
+                      children: [
+                        ConfirmedToyCard(reservation: res)
+                      ],
+                    ))
+                  ],
+                ),
+                SizedBox(height: 20,)
+
+            ],),
+          
+          //Requested Toys
+          if (requestedToys.isNotEmpty)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ToyCard(toy: toy),
-              Row(
+              Text('Requested Toys', style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold
+              ),),
+              SizedBox(height: 5),
+              ...requestedToys.map((toy) => Column(
+                children: [
+
+                  ToyCard(toy: toy),
+                 Row(
                 spacing: 10,
                 children: [
                   OutlinedButton(
@@ -60,11 +94,12 @@ class _ToyRequestsPageState extends State<ToyRequestsPage> {
                     ),
                   ),
                 ],
-              ),
+              ),],),),
             ],
-          );
-        }).toList(),
-      ),
-    );
+          ),
+        ],
+
+          ),
+      );
   }
 }
