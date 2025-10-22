@@ -46,6 +46,8 @@ class ConfirmedToyCard extends StatelessWidget {
                     maxLines: 3,
                   ),
                   SizedBox(height: 4),
+                  Text("Pickup/Dropoff location: ${reservation.dropoff_pickuplocation}"),
+                  SizedBox(height: 4),
                   Text("Status: In Progress"),
                 ],
               ),
